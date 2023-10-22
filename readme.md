@@ -7,7 +7,7 @@ You can parse:
 * Frequency measurements - From the "Setup/Optimize" meny
 * Autotuning results - After finishing an autotuning, you can save the "auto-tuning result", this file contains the sugested control parameters and the frequency responses.
 
-## Strucutre of repo
+## Files in repo
 
 * `TraceTools.py` Main file, import this and use the functions to parse different type of files.
 * `tracetypes.py` class definitions of what the measurment files are parsed to.
