@@ -9,7 +9,7 @@ import pandas as pd
 
 
 
-def parse_trace_file(filename)->list[Trace]:
+def parse_trace_file(filename)->list[tp.Trace]:
     root = ET.parse(filename).getroot()
 
     trace = root.find('traceData')
@@ -58,16 +58,16 @@ def parse_trace_file(filename)->list[Trace]:
     traces = []
 
     for i,name in enumerate(signal_names):
-        trace = Trace(name,signal_paths[i],np.array(time_vecs[i]),np.array(signals[i]))
+        trace = tp.Trace(name,signal_paths[i],np.array(time_vecs[i]),np.array(signals[i]))
         traces.append(trace)
     return traces
 
-def plot_trace(T:Trace,c=''):
+def plot_trace(T:tp.Trace,c=''):
     plt.plot(T.time,T.signal,c)
     plt.xlabel('Time [s]')
     plt.title(T.nck_path)
 
-def save_signals_as_csv(signals:list[Trace],filename):
+def save_signals_as_csv(signals:list[tp.Trace],filename):
     data = []
     columns = []
 
@@ -102,7 +102,7 @@ def parse_xml_ts(ts_root):
 
     t = np.linspace(0,tf,len(vals))
 
-    return t,vals
+    return tp.TimeSeries(t,vals)
 
 def parse_xml_freq(fr_root):
 
