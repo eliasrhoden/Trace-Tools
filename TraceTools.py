@@ -254,7 +254,7 @@ def parse_xml_speed_ctrl_pars(root,Ts):
 
     # params
     Kp = find_float_by_name(root,'m_dKpGain')
-    Tn = find_float_by_name(root,'m_dIntegralTime')*1/1000
+    Tn = find_float_by_name(root,'m_dIntegralTime')
 
     using_ref_mdl = bool(find_by_name(root,'boolean','m_bUsingReferenceModel'))
     ref_mdl_fr = find_float_by_name(root,'m_dRefmod_freq')
