@@ -256,7 +256,7 @@ def parse_xml_speed_ctrl_pars(root,Ts):
     Kp = find_float_by_name(root,'m_dKpGain')
     Tn = find_float_by_name(root,'m_dIntegralTime')
 
-    using_ref_mdl = bool(find_by_name(root,'boolean','m_bUsingReferenceModel'))
+    using_ref_mdl = 'true' in find_by_name(root,'boolean','m_bUsingReferenceModel').text
     ref_mdl_fr = find_float_by_name(root,'m_dRefmod_freq')
     ref_mdl_d = find_float_by_name(root,'m_dRefmod_damping')
     ref_mdl_timedelay = find_float_by_name(root,'m_dRefmod_tdelay')
