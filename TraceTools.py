@@ -329,7 +329,7 @@ def parse_autotune_file(file):
 
         if i== 0:
             original_speed_par = parse_xml_speed_ctrl_pars(spd_ctrl,Ts)
-        if i == 2:
+        if i == 1:
             tuned_speed_par = parse_xml_speed_ctrl_pars(spd_ctrl,Ts)
 
     return tp.AutoTuneResult(machine=machine_name,
