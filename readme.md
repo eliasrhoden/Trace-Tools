@@ -4,7 +4,7 @@ A python library for parsing and working with trace files from Siemens Sinumerik
 
 You can parse:
 * Trace files - That you configure under the "Diagnostic" meny
-* Frequency measurements - From the "Setup/Optimize" meny
+* Frequency measurements and step responses - From the "Setup/Optimize" meny
 * Autotuning results - After finishing an autotuning, you can save the "auto-tuning result", this file contains the sugested control parameters and the frequency responses.
 
 ## Files in repo
