@@ -1,12 +1,10 @@
 
 import xml.etree.ElementTree as ET
 import matplotlib.pyplot as plt
-import b85
-import tracetypes as tp
+from . import b85
+from . import tracetypes as tp
 import numpy as np
 import pandas as pd
-
-
 
 
 def parse_trace_file(filename)->list[tp.Trace]:
@@ -367,8 +365,12 @@ def parse_freq_meas_file(file):
         ts = parse_xml_ts(ts_node)
         ts_signals.append(ts)
 
-    input_signals = [ts_signals[1]]
-    output_signals = [ts_signals[0]]
+    if len(ts_signals)>=2:
+        input_signals = [ts_signals[1]]
+        output_signals = [ts_signals[0]]
+    else:
+        input_signals = []
+        output_signals = []
 
     if len(ts_signals) == 4:
         input_signals = [ts_signals[2],ts_signals[3]]
@@ -377,21 +379,44 @@ def parse_freq_meas_file(file):
 
     cross_spectrums = meas_node.iter('CrossSpectrum')
 
-    spec_dens = parse_xml_freq(next(cross_spectrums))
-    freq_resp = parse_xml_freq(next(cross_spectrums))
+    input = parse_xml_freq(next(cross_spectrums))
+    output = parse_xml_freq(next(cross_spectrums)) #y
+    spec_dens = parse_xml_freq(next(cross_spectrums)) #spec eller x
+
+    X = np.array(input.values)
+    Y = np.array(output.values)
+    W = output.freqs_hz
+
+    G = tp.FreqResponse(W,X/Y)
 
     return tp.FrequencyMeasurement(
                                     machine=machine_name,
                                     timestamp=timestamp,
                                     input_time_series=input_signals,
                                     output_time_series=output_signals,
-                                    plant_freq_response=freq_resp,
+                                    input_freq=input,
+                                    output_freq=output,
+                                    plant_freq_response=G,
                                     cross_spectrum=spec_dens)
 
-if __name__ ==  '__main__':
-    #a = par('xml files\\tuning_export.xml')
-    freq_meas = parse_freq_meas_file(r'xml files\freq_trace.XML')
 
-    plot_freq(freq_meas.plant_freq_response)
 
-    plt.show()
+def parse_step_response(file):
+
+    tree = ET.parse(file)
+    root = tree.getroot()
+
+    TS:list[tp.TimeSeries] = []
+
+    for s in root.iter('TimeSeries'):
+        TS.append(parse_xml_ts(s))
+    
+    TS[0].values = TS[0].values *-1.0
+    TS[1].values = TS[1].values *-1.0
+
+    FS = []
+    for s in root.iter('CrossSpectrum'):
+        FS.append(parse_xml_freq(s))
+
+
+    return tp.StepResponsefile(input=TS[1],output=TS[0],autospec1=FS[0],crossSpecInfo=FS[1],autospec2=FS[2])
