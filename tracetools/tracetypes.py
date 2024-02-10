@@ -70,6 +70,18 @@ class AutoTuneResult:
     plant_freq_response:FreqResponse
     freq_meas_coherence:FreqResponse
 
+@dataclasses.dataclass
+class StepResponsefile:
+    input:TimeSeries
+    output:TimeSeries
+
+    autospec1:FreqResponse
+    autospec2:FreqResponse
+    crossSpecInfo: FreqResponse
+
+
+
+
 
 @dataclasses.dataclass
 class FrequencyMeasurement:
@@ -81,6 +93,8 @@ class FrequencyMeasurement:
     input_time_series:list[TimeSeries]
     output_time_series:list[TimeSeries]
 
+    input_freq:FreqResponse
+    output_freq:FreqResponse
     plant_freq_response:FreqResponse
     cross_spectrum:FreqResponse
 
