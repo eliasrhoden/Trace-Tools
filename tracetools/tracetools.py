@@ -12,6 +12,10 @@ def parse_trace_file(filename)->list[tp.Trace]:
     trace = root.find('traceData')
     df = trace.find('dataFrame')
 
+    key_order = _find_key_order(df)
+
+    signal_meta_data = _rearrange_meta_data(signal_meta_data,key_order)
+
     signals = []
     time_vecs = []
 
@@ -36,6 +40,24 @@ def parse_trace_file(filename)->list[tp.Trace]:
         traces.append(trace)
     return traces
 
+def _rearrange_meta_data(metadata,keys):
+    new_order = []
+    for key in keys:
+        for m in metadata:
+            if m[2] == key:
+                new_order.append(m)
+                break
+    return new_order
+
+
+
+def _find_key_order(df):
+    keys = []
+    for s in df.iter("dataSignal"):
+        key = s.attrib['key']
+        keys.append(key)
+    return keys
+
 def _find_signal_names(root):
     dispSetup = root.find('traceDisplaySetup')
     
@@ -44,7 +66,8 @@ def _find_signal_names(root):
     for s in dispSetup.find("signals"):
         desc = s.attrib['description']
         name = s.attrib['name']
-        signals.append((desc,name))
+        key = s.attrib['key']
+        signals.append((desc,name,key))
 
     return signals
 
