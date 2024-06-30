@@ -75,9 +75,12 @@ def plot_freq(f:tp.FreqResponse):
 
         f1 = plt.subplot(2,1,1)
         plt.semilogx(hz,mag)
+        plt.ylabel('Magnitude [dB]')
 
         plt.subplot(2,1,2,sharex=f1)
         plt.semilogx(hz,phase)
+        plt.ylabel('Phase [Deg]')
+        plt.xlabel('Frequency [Hz]')
 
 
 def find_by_name(root,tag_type,name):
