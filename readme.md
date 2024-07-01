@@ -9,7 +9,7 @@ You can parse:
 
 Note that this library only work with the newer version of Sinumerik operate, not sure which exact version, but if it produces xml-files when saving, then it should work.
 
-Also this is not affiliated with Siemens, I leave no quarantees for the accuarcy of the parsed data, use it at your own risk!
+**Also this is not affiliated with Siemens, I leave no quarantees for the accuarcy of the parsed data, use it at your own risk!**
 
 ## Repo structure
 
