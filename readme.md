@@ -7,6 +7,10 @@ You can parse:
 * Frequency measurements and step responses - From the "Setup/Optimize" meny
 * Autotuning results - After finishing an autotuning, you can save the "auto-tuning result", this file contains the sugested control parameters and the frequency responses.
 
+Note that this library only work with the newer version of Sinumerik operate, not sure which exact version, but if it produces xml-files when saving, then it should work.
+
+Also this is not affiliated with Siemens, I leave no quarantees for the accuarcy of the parsed data, use it at your own risk!
+
 ## Repo structure
 
 * `TraceTools.py` Main file, import this and use the functions to parse different type of files.
