@@ -7,15 +7,66 @@ You can parse:
 * Frequency measurements and step responses - From the "Setup/Optimize" meny
 * Autotuning results - After finishing an autotuning, you can save the "auto-tuning result", this file contains the sugested control parameters and the frequency responses.
 
-## Files in repo
+## Repo structure
 
 * `TraceTools.py` Main file, import this and use the functions to parse different type of files.
 * `tracetypes.py` class definitions of what the measurment files are parsed to.
 * `b85.py` used for decoding their non standard implementation of ASCII 85.
 
+## Usage
+Download the repo and place the `tracetools` folder in your working directory, then use the library as in the examples further down this page. 
 
 
-# Automatic Servo Tuning files (AST-Files)
+# Examples
+
+This section will present some simple usecases of parsing each of the file-types supported.
+
+## Servo trace files
+Normal servo trace files can be parsed with the `parse_trace_file` function.
+Its then possible to plot the traces or do some signal processing of them.
+
+
+```python
+import tracetools as tt 
+import matplotlib.pyplot as plt
+
+traces = tt.parse_trace_file(r'traces\trace4.xml')
+
+torque = traces[0]
+
+tt.plot_trace(torque)
+plt.show()
+```
+![](img/trace0.png)
+
+Here I show how you can smooth the signal using a noncausal lowpass filter, i.e. running it forward and then backwards. Google *filtfilt* if you want to learn more.
+
+```python
+import tracetools as tt 
+import matplotlib.pyplot as plt
+from scipy import signal
+
+def filtfilt(x,alpha):
+    # Lowpass smoothing
+    # alpha \in (0,1)
+    a = [1,-alpha]
+    b = [0,(1-alpha)]
+    return signal.filtfilt(b,a,x)
+
+traces = tt.parse_trace_file(r'traces\trace4.xml')
+
+torque = traces[0]
+torque_f = filtfilt(torque.signal,0.95)
+
+plt.plot(torque.time,torque.signal,label='Sampled signal')
+plt.plot(torque.time,torque_f,label='Filtered')
+plt.legend()
+
+plt.show()
+```
+![](img/trace1.png)
+
+## Automatic Servo Tuning files (AST-Files)
 AST Files can be saved at the end of performing an auto-tuning of an axis.
 These contains the frequency response of the mechanical system and current control. It also contains all the control parameters for the servo-drive.
 
@@ -50,7 +101,7 @@ SpeedCtrl(Kp=0.2160315604218958, Ti=0.01, Ts=0.00025,
 
 To see what is parsed from the AST-file, check the `tracetools/tracetypes.py` file.
 
-# Frequency measurement files
+## Frequency measurement files
 Appart from auto-servo-tuning, one can also do stand-alone frequency measurements. These can also be parsed, but they do not contain the servo-drive parameters. However, they do contain the timeseries signals that are used to compute the frequency measurement.
 
 
