@@ -3,9 +3,9 @@
 A python library for parsing and working with trace files from Siemens Sinumerik CNC system.
 
 You can parse:
-* Trace files - That you configure under the "Diagnostic" meny
-* Frequency measurements and step responses - From the "Setup/Optimize" meny
 * Autotuning results - After finishing an autotuning, you can save the "auto-tuning result", this file contains the sugested control parameters and the frequency responses.
+* Frequency measurements and step responses - From the "Setup/Optimize" meny
+* Trace files - That you configure under the "Diagnostic" meny
 
 Note that this library only works with the newer version of Sinumerik operate, not sure which exact version, but if it produces xml-files when saving, then it should work.
 
@@ -24,51 +24,6 @@ Download the repo and place the `tracetools` folder in your working directory, t
 # Examples
 
 This section will present some simple usecases of parsing each of the file-types supported.
-
-## Servo trace files
-Normal servo trace files can be parsed with the `parse_trace_file` function.
-Its then possible to plot the traces or do some signal processing of them.
-
-
-```python
-import tracetools as tt 
-import matplotlib.pyplot as plt
-
-traces = tt.parse_trace_file(r'traces\trace4.xml')
-
-torque = traces[0]
-
-tt.plot_trace(torque)
-plt.show()
-```
-![](img/trace0.png)
-
-Here I show how you can smooth the signal using a noncausal lowpass filter, i.e. running it forward and then backwards. Google *filtfilt* if you want to learn more.
-
-```python
-import tracetools as tt 
-import matplotlib.pyplot as plt
-from scipy import signal
-
-def filtfilt(x,alpha):
-    # Lowpass smoothing
-    # alpha \in (0,1)
-    a = [1,-alpha]
-    b = [0,(1-alpha)]
-    return signal.filtfilt(b,a,x)
-
-traces = tt.parse_trace_file(r'traces\trace4.xml')
-
-torque = traces[0]
-torque_f = filtfilt(torque.signal,0.95)
-
-plt.plot(torque.time,torque.signal,label='Sampled signal')
-plt.plot(torque.time,torque_f,label='Filtered')
-plt.legend()
-
-plt.show()
-```
-![](img/trace1.png)
 
 ## Automatic Servo Tuning files (AST-Files)
 AST Files can be saved at the end of performing an auto-tuning of an axis.
@@ -139,3 +94,49 @@ plt.legend()
 plt.show()
 ```
 ![](img/freq_ts.png)
+
+
+## Servo trace files
+Normal servo trace files can be parsed with the `parse_trace_file` function.
+Its then possible to plot the traces or do some signal processing of them.
+
+
+```python
+import tracetools as tt 
+import matplotlib.pyplot as plt
+
+traces = tt.parse_trace_file(r'traces\trace4.xml')
+
+torque = traces[0]
+
+tt.plot_trace(torque)
+plt.show()
+```
+![](img/trace0.png)
+
+Here I show how you can smooth the signal using a noncausal lowpass filter, i.e. running it forward and then backwards. Google *filtfilt* if you want to learn more.
+
+```python
+import tracetools as tt 
+import matplotlib.pyplot as plt
+from scipy import signal
+
+def filtfilt(x,alpha):
+    # Lowpass smoothing
+    # alpha \in (0,1)
+    a = [1,-alpha]
+    b = [0,(1-alpha)]
+    return signal.filtfilt(b,a,x)
+
+traces = tt.parse_trace_file(r'traces\trace4.xml')
+
+torque = traces[0]
+torque_f = filtfilt(torque.signal,0.95)
+
+plt.plot(torque.time,torque.signal,label='Sampled signal')
+plt.plot(torque.time,torque_f,label='Filtered')
+plt.legend()
+
+plt.show()
+```
+![](img/trace1.png)
