@@ -187,9 +187,9 @@ def parse_autotune_file(file):
 
     dynamic_mdl_list = find_by_name(speed_ctrl_root,'DynamicModelList','m_SpeedControllerList')
 
-
     plant_freq = None 
     meas_coherence = None 
+    current_freq = None
 
     for fr in dynamic_mdl_list.iter('FrequencyResponseFunction'):
         name = fr.get('name')
@@ -199,6 +199,22 @@ def parse_autotune_file(file):
 
         if name == 'm_pMeasCoherence':
             meas_coherence = parse_xml_freq(fr)
+
+    # current freq response
+    for fr in dynamic_mdl_list.iter('FrequencyResponseFunction'):
+        name = fr.get('name')
+
+        if name == 'm_pPlant':
+            plant_freq = parse_xml_freq(fr)
+
+        if name == 'm_pMeasCoherence':
+            meas_coherence = parse_xml_freq(fr)
+
+        if name == 'm_pCurrentFreqResponse':
+            current_freq = parse_xml_freq(fr)
+
+    current_freq_xml = find_by_name(speed_ctrl_root,'FrequencyResponseFunction','m_CurrentControllerResponse')
+    current_freq = parse_xml_freq(current_freq_xml)
 
 
     # Ctrl params
@@ -219,7 +235,8 @@ def parse_autotune_file(file):
                                 timestamp=timestamp,
                                 speed_ctrl_params=tuned_speed_par,
                                 plant_freq_response=plant_freq,
-                                freq_meas_coherence=meas_coherence)
+                                freq_meas_coherence=meas_coherence,
+                                current_ctrl_freq_response=current_freq)
 
 
 def parse_freq_meas_file(file):

@@ -69,6 +69,7 @@ class AutoTuneResult:
 
     plant_freq_response:FreqResponse
     freq_meas_coherence:FreqResponse
+    current_ctrl_freq_response:FreqResponse
 
 @dataclasses.dataclass
 class StepResponsefile:
